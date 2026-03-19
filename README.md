@@ -14,19 +14,6 @@
 
 ---
 
-## 📊 Dashboard Preview
-
-### 🔹 Overview Analysis
-![Overview Dashboard](screenshots/overview.png)
-
-### 🔹 Time Analysis
-![Time Analysis Dashboard](screenshots/time_analysis.png)
-
-### 🔹 Detail Analysis
-![Detail Analysis Dashboard](screenshots/details.png)
-
----
-
 ## 📸 Dashboard Preview
 
 ### Dashboard 1 — Overview Analysis
