@@ -14,13 +14,26 @@
 
 ---
 
+## 📊 Dashboard Preview
+
+### 🔹 Overview Analysis
+![Overview Dashboard](screenshots/overview.png)
+
+### 🔹 Time Analysis
+![Time Analysis Dashboard](screenshots/time_analysis.png)
+
+### 🔹 Detail Analysis
+![Detail Analysis Dashboard](screenshots/details.png)
+
+---
+
 ## 📌 Project Overview
 
 This project analyzes real-world Uber trip data from **June 2024** using **Power BI** with advanced DAX measures, dynamic measure selectors, drill-through pages, and heatmap visuals. The goal is to help stakeholders make data-driven decisions on pricing, driver allocation, and demand forecasting.
 
 ---
 
-## 📊 Dataset
+## 📋 Dataset
 
 | File | Description |
 |------|-------------|
@@ -42,22 +55,26 @@ This project analyzes real-world Uber trip data from **June 2024** using **Power
 ### Dashboard 1 — Overview Analysis
 > Booking trends, revenue KPIs, vehicle performance, and location hotspots.
 
-**KPIs Tracked:**
-- ✅ Total Bookings
-- ✅ Total Booking Value
-- ✅ Average Booking Value
-- ✅ Total Trip Distance
-- ✅ Average Trip Distance
-- ✅ Average Trip Time
+**KPIs:**
+
+| Metric | Value |
+|--------|-------|
+| Total Bookings | 103.7K |
+| Total Booking Value | $1.6M |
+| Avg Booking Value | $14.98 |
+| Total Trip Distance | 349K Miles |
+| Avg Trip Distance | 3 Miles |
 
 **Visuals:**
-- Dynamic Measure Selector (Disconnected Table + DAX Switch)
-- Bookings by Payment Type
-- Bookings by Trip Type (Day / Night)
-- Vehicle Type Grid with Conditional Formatting
-- Total Bookings by Day (trend line)
-- Top 5 Pickup & Drop-off Locations
-- Most Preferred Vehicle per Location
+- Dynamic Measure Selector (Total Bookings / Total Booking Value / Total Trip Distance)
+- Trip Distance by Payment Type — Donut Chart
+- Trip Distance by Day/Night — Donut Chart
+- Total Bookings by Day — Line Chart
+- Vehicle Type Analysis Grid (UberX, Uber Comfort, Uber Black, UberXL, Uber Green)
+- Top 5 Pickup Locations (Penn Station leads at 4.5K)
+- Most Frequent Pickup: **Penn Station/Madison Sq West**
+- Most Frequent Drop-off: **Upper East Side North**
+- Farthest Trip: **Lower East Side → Crown Heights North (144.1 miles)**
 
 ---
 
@@ -65,20 +82,20 @@ This project analyzes real-world Uber trip data from **June 2024** using **Power
 > Identifying peak hours, busiest days, and demand heatmaps.
 
 **Visuals:**
-- Bookings by Pickup Time (10-minute intervals) — Area Chart
-- Bookings by Day Name (Mon–Sun) — Line Chart
-- Hour × Day Heatmap (Matrix Grid) — highlights peak booking windows
+- Total Bookings by Pickup Time — Area Chart (peak around hour 10–12)
+- Total Bookings by Day Name — Line Chart (Friday–Saturday highest)
+- Hour × Day Heatmap — Matrix Grid (hours 0–23 vs Mon–Sun)
 
 ---
 
-### Dashboard 3 — Details Tab
+### Dashboard 3 — Detail Analysis
 > Granular drill-through data table for deep-dive analysis.
 
 **Features:**
-- Full trip-level data grid
-- Drill-through from any visual
-- "View Full Data" bookmark toggle
-- Reset filters button
+- Full trip-level grid (103,728 records)
+- Columns: Trip ID, Pickup Date, Vehicle, Payment Type, Passenger Count, Trip Distance, Booking Value, Pickup Location, Hour
+- Drill-through from any visual on other pages
+- Total row showing: 146,478 passengers | 348.93K miles | $1,553,672.8 revenue
 
 ---
 
@@ -96,7 +113,8 @@ SWITCH(
 )
 
 -- Total Booking Value
-Total Booking Value = SUM(uber_trip_details[fare_amount]) + SUM(uber_trip_details[Surge Fee])
+Total Booking Value = 
+    SUM(uber_trip_details[fare_amount]) + SUM(uber_trip_details[Surge Fee])
 
 -- Average Trip Time (Minutes)
 Avg Trip Time = 
@@ -105,9 +123,12 @@ AVERAGEX(
     DATEDIFF(uber_trip_details[Pickup Time], uber_trip_details[Drop Off Time], MINUTE)
 )
 
--- Most Frequent Pickup Location
-Top Pickup Location = 
-TOPN(1, VALUES(Location[Location]), CALCULATE(COUNTROWS(uber_trip_details)))
+-- Drop-off Location (Inactive Relationship)
+Drop-off Location Bookings = 
+CALCULATE(
+    COUNTROWS(uber_trip_details),
+    USERELATIONSHIP(uber_trip_details[DOLocationID], Location_Table[LocationID])
+)
 ```
 
 ---
@@ -120,17 +141,16 @@ Uber_Trip_Details
     └── DOLocationID ──→ Location_Table (LocationID)   [Inactive — activated via USERELATIONSHIP]
 ```
 
-> Drop-off location analysis uses `USERELATIONSHIP()` in DAX to activate the inactive relationship.
-
 ---
 
 ## 🔑 Key Insights
 
-- 📍 **Top pickup hotspot:** Identified via location frequency analysis
-- 🚗 **Most booked vehicle:** UberX dominates across all locations
-- 💳 **Preferred payment:** Uber Pay leads over Cash, Google Pay, Amazon Pay
-- 🌙 **Peak hours:** Late evening and early morning show highest surge
-- 📅 **Busiest day:** Weekends consistently outperform weekdays in bookings
+- 📍 **Top pickup location:** Penn Station/Madison Sq West (4.5K trips)
+- 🚗 **Most booked vehicle:** UberX with 38,744 bookings ($583K revenue)
+- 💳 **Payment split:** Uber Pay dominates, Cash is second
+- 🌙 **Day vs Night:** 98.1% Day trips vs 1.89% Night trips
+- 📅 **Busiest days:** Friday and Saturday show highest demand
+- 🏆 **Farthest trip:** 144.1 miles (Lower East Side → Crown Heights North)
 
 ---
 
@@ -141,7 +161,7 @@ Uber_Trip_Details
    git clone https://github.com/Prathmesh-Sanmukh/Uber_Trip_Analysis_Dashboard.git
    ```
 2. Open `uber_analysis.pbix` in **Power BI Desktop**
-3. If prompted, re-link the Excel data sources from the `/data` folder
+3. Re-link Excel data sources from the repo folder if prompted
 4. Explore all 3 dashboard pages using slicers and drill-through
 
 ---
@@ -151,9 +171,9 @@ Uber_Trip_Details
 | Tool | Usage |
 |------|-------|
 | Power BI Desktop | Dashboard creation, DAX, data modeling |
-| DAX | KPI measures, dynamic selector, time intelligence |
+| DAX | KPIs, dynamic measure selector, inactive relationships |
 | Power Query | Data transformation & cleaning |
-| Excel | Raw data source |
+| Excel | Raw data source (103K+ records) |
 | Python (Pandas) | Initial data exploration |
 
 ---
