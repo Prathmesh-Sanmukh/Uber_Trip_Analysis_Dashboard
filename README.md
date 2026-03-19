@@ -27,6 +27,19 @@
 
 ---
 
+## 📸 Dashboard Preview
+
+### Dashboard 1 — Overview Analysis
+![Overview Dashboard](overview.png)
+
+### Dashboard 2 — Time Analysis
+![Time Analysis Dashboard](time_analysis.png)
+
+### Dashboard 3 — Details Tab
+![Details Dashboard](details.png)
+
+---
+
 ## 📌 Project Overview
 
 This project analyzes real-world Uber trip data from **June 2024** using **Power BI** with advanced DAX measures, dynamic measure selectors, drill-through pages, and heatmap visuals. The goal is to help stakeholders make data-driven decisions on pricing, driver allocation, and demand forecasting.
